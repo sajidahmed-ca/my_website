@@ -1,0 +1,320 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens
+   Warm off-white canvas, near-black ink, one controlled red accent and a
+   palette of soft neutrals pulled from the artwork itself.
+   ========================================================================== */
+
+@theme {
+  --color-canvas: #fbf7f1;
+  --color-canvas-deep: #f4ece0;
+  --color-surface: #ffffff;
+  --color-surface-sunk: #faf5ec;
+
+  --color-ink: #1a1614;
+  --color-ink-soft: #514a44;
+  --color-ink-muted: #5f5a52;
+  --color-ink-faint: #b3aaa0;
+
+  --color-line: #e7ded0;
+  --color-line-soft: #f0e9dd;
+
+  --color-accent: #c8402f;
+  --color-accent-dark: #9e2f22;
+  --color-accent-tint: #f8eae6;
+
+  --color-sage: #7c9b79;
+  --color-sage-tint: #ecf0e9;
+  --color-teal: #2e7c73;
+  --color-teal-tint: #e4efed;
+  --color-mustard: #b8830f;
+  --color-mustard-tint: #fbf1dd;
+  --color-plum: #7c4b62;
+  --color-plum-tint: #f4ebef;
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-editorial: var(--font-instrument-serif), ui-serif, Georgia, serif;
+
+  --radius-card: 1.125rem;
+  --radius-tile: 1.75rem;
+
+  --shadow-sheet: 0 1px 2px rgb(26 22 20 / 0.04), 0 8px 24px -12px rgb(26 22 20 / 0.16);
+  --shadow-lift: 0 2px 4px rgb(26 22 20 / 0.05), 0 22px 46px -20px rgb(26 22 20 / 0.28);
+  --shadow-sticker: 0 10px 30px -14px rgb(26 22 20 / 0.45);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-float-slow: float-slow 9s var(--ease-out-soft) infinite;
+  --animate-float-mid: float-mid 7s var(--ease-out-soft) infinite;
+  --animate-drift: drift 16s linear infinite;
+
+  @keyframes float-slow {
+    0%,
+    100% {
+      transform: translateY(0) rotate(var(--tilt, 0deg));
+    }
+    50% {
+      transform: translateY(-14px) rotate(calc(var(--tilt, 0deg) * 0.5));
+    }
+  }
+
+  @keyframes float-mid {
+    0%,
+    100% {
+      transform: translateY(0) rotate(var(--tilt, 0deg));
+    }
+    50% {
+      transform: translateY(-9px) rotate(calc(var(--tilt, 0deg) * 0.6));
+    }
+  }
+
+  @keyframes drift {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 6.5rem;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Visible, on-brand focus ring everywhere. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: #fff;
+  }
+
+  /* Keep long words (names, tags) from forcing horizontal scroll. */
+  h1,
+  h2,
+  h3,
+  p,
+  li,
+  dd,
+  dt {
+    overflow-wrap: break-word;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  /* Remove the number input spinners — quantity uses custom buttons. */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+}
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+
+@utility shell {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 90rem;
+  padding-inline: 1.25rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+
+  @media (width >= 80rem) {
+    padding-inline: 3.5rem;
+  }
+}
+
+@utility shell-narrow {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 52rem;
+  padding-inline: 1.25rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+/* Editorial display scale — fluid, clamped so nothing overflows at 390px. */
+@utility display-xl {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  font-size: clamp(2.5rem, 8.2vw, 6.5rem);
+}
+
+@utility display-lg {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  font-size: clamp(2.1rem, 5.4vw, 4rem);
+}
+
+@utility display-md {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  font-size: clamp(1.6rem, 3.2vw, 2.5rem);
+}
+
+@utility editorial-serif {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Dotted paper texture used behind artwork walls. */
+@utility paper-grain {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgb(26 22 20 / 0.055) 1px, transparent 0);
+  background-size: 18px 18px;
+}
+
+@utility hairline {
+  border-color: var(--color-line);
+}
+
+/* Sticker presentation: transparent PNG/SVG preserved, object-contain. */
+@utility art-contain {
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Hide scrollbar on horizontally scrolling rails without losing scrollability. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 260ms var(--ease-out-soft);
+
+  &:hover {
+    background-size: 100% 1px;
+  }
+}
+
+/* ==========================================================================
+   Scroll reveal
+   Gated behind `.has-js` (set by an inline script in the root layout) so the
+   content is fully visible when JavaScript is unavailable.
+   ========================================================================== */
+
+.has-js [data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.7s var(--ease-out-soft),
+    transform 0.7s var(--ease-out-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.has-js [data-reveal][data-reveal-dir="left"] {
+  transform: translateX(-20px);
+}
+
+.has-js [data-reveal][data-reveal-dir="right"] {
+  transform: translateX(20px);
+}
+
+.has-js [data-reveal][data-reveal-dir="scale"] {
+  transform: scale(0.965);
+}
+
+.has-js [data-reveal="in"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ==========================================================================
+   Reduced motion — kill every decorative animation, keep content visible.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
